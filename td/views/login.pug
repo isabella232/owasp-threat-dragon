@@ -47,8 +47,14 @@ html(lang="en")
                                         |Obviously, to do this you need to log in first...
                             .row
                                 .col-sm-5.col-sm-offset-7
-                                    form(action="login",role="login",method="POST")
+                                    form(action="login/github",role="login",method="POST")
                                         input(type="hidden",name="_csrf",value=csrfToken)
                                         button.btn.btn-lg.btn-default.btn-block(type="submit")
                                             span.fa.fa-2x.fa-github.icon-align.fa-fw
-                                            span Login with GitHub                                            
+                                            span Login with GitHub
+                                    br
+                                    form(action="login/gitlab",role="login",method="POST")
+                                        input(type="hidden",name="_csrf",value=csrfToken)
+                                        button.btn.btn-lg.btn-default.btn-block(type="submit")
+                                            span.fa.fa-2x.fa-gitlab.icon-align.fa-fw
+                                            span Login with GitLab
