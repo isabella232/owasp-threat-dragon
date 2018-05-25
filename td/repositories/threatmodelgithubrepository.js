@@ -5,19 +5,25 @@ var threatmodelrepository = {};
 threatmodelrepository.repos = function (page, accessToken, cb) {
 
     var client = github.client(accessToken);
-    client.me().repos(page, cb);
+    client.me().repos(page, function(err, repos, headers){
+        cb(err,{repos: repos, pagination: getPagination(page,headers)})
+    });
 };
 
 threatmodelrepository.branches = function (repoInfo, accessToken, cb) {
 
     var client = github.client(accessToken);
-    client.repo(getRepoFullName(repoInfo)).branches(repoInfo.page, cb);
+    client.repo(getRepoFullName(repoInfo)).branches(repoInfo.page, function(err, branches, headers){
+        cb(err,{branches: branches, pagination: getPagination(repoInfo.page,headers)})
+    });
 };
 
 threatmodelrepository.models = function (branchInfo, accessToken, cb) {
 
     var client = github.client(accessToken);
-    client.repo(getRepoFullName(branchInfo)).contents('ThreatDragonModels', branchInfo.branch, cb);
+    client.repo(getRepoFullName(branchInfo)).contents('ThreatDragonModels', branchInfo.branch, function (err,models){
+        cb(err, {models: models})
+    });
 };
 
 threatmodelrepository.model = function (modelInfo, accessToken, cb) {
@@ -80,6 +86,32 @@ function getModelPath(modelInfo) {
 
 function getModelContent(modelInfo) {
     return JSON.stringify(modelInfo.body, null, '  ');
+}
+
+//private methods
+function getPagination(headers, page) {
+    
+    var pagination = { page: page, next: false, prev: false };
+    var linkHeader = headers.link;
+    
+    if(linkHeader) {
+        
+        linkHeader.split(',').forEach(function(link) {
+           if (isLinkType('"next"')) {
+               pagination.next = true;
+           }
+           
+           if (isLinkType('"prev"')) {
+               pagination.prev = true;
+           }
+           
+           function isLinkType(type) {
+               return link.split(';')[1].split('=')[1] === type;
+           }
+        });
+    }
+    
+    return pagination;  
 }
 
 module.exports = threatmodelrepository;

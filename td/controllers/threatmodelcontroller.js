@@ -1,17 +1,19 @@
 'use strict';
-var repository = require('../repositories/threatmodelrepository');
+var repository = {}
+repository.github = require('../repositories/threatmodelgithubrepository');
+repository.gitlab = require('../repositories/threatmodelgitlabrepository');
 var threatmodelcontroller = {};
 
 threatmodelcontroller.repos = function (req, res) {
     
     var page = req.query.page || 1;
-    repository.repos(page, req.user.accessToken, function (err, repos, headers) {
+    repository[req.user.profile.provider].repos(page, req.user.accessToken, function (err, data) {
         if (!err) {
             var responseRepos = [];
-            repos.forEach(function (repo, index) {
+            data.repos.forEach(function (repo, index) {
                 responseRepos[index] = repo.full_name;
             });
-            res.send({repos: responseRepos, pagination: getPagination(headers, page)});
+            res.send({repos: responseRepos, pagination: data.pagination});
         } else {
             res.status(err.statusCode || 500).json(err);
         }
@@ -26,13 +28,13 @@ threatmodelcontroller.branches = function (req, res){
         page: req.query.page || 1
     };
     
-    repository.branches(repoInfo, req.user.accessToken, function(err, branches, headers) {
+    repository[req.user.profile.provider].branches(repoInfo, req.user.accessToken, function(err, data) {
         if(!err) {
             var responseBranches = [];
-            branches.forEach(function (branch, index) {
+            data.branches.forEach(function (branch, index) {
                 responseBranches[index] = branch.name;
             });
-            res.send({branches: responseBranches, pagination: getPagination(headers, repoInfo.page)});
+            res.send({branches: responseBranches, pagination: data.pagination});
         } else {
             res.status(err.statusCode || 500).json(err);
         }     
@@ -47,10 +49,10 @@ threatmodelcontroller.models = function (req, res){
         branch: req.params.branch
     };
     
-    repository.models(branchInfo, req.user.accessToken, function(err, models) {
+    repository[req.user.profile.provider].models(branchInfo, req.user.accessToken, function(err, data) {
         if(!err) {
             var responseModels = [];
-            models.forEach(function (model, index) {
+            data.models.forEach(function (model, index) {
                 responseModels[index] = model.name;
             });
             res.send(responseModels);
@@ -68,7 +70,7 @@ threatmodelcontroller.model = function (req, res) {
         model: req.params.model
     };
 
-    repository.model(modelInfo, req.user.accessToken, function (err, data) {
+    repository[req.user.profile.provider].model(modelInfo, req.user.accessToken, function (err, data) {
         if (!err) {
             var model= (new Buffer(data.content, 'base64')).toString();
             res.send(model);
@@ -87,7 +89,7 @@ threatmodelcontroller.create = function(req, res) {
         body: req.body        
     };
     
-    repository.create(modelInfo, req.user.accessToken, function (err, data) {
+    repository[req.user.profile.provider].create(modelInfo, req.user.accessToken, function (err, data) {
         if (!err) {
             res.send(data);
         } else {
@@ -105,7 +107,7 @@ threatmodelcontroller.update = function(req, res) {
         body: req.body        
     };
     
-    repository.update(modelInfo, req.user.accessToken, function (err, data) {
+    repository[req.user.profile.provider].update(modelInfo, req.user.accessToken, function (err, data) {
         if (!err) {
             res.send(data);
         } else {
@@ -122,7 +124,7 @@ threatmodelcontroller.deleteModel = function(req, res) {
         model: req.params.model,      
     };
     
-    repository.deleteModel(modelInfo, req.user.accessToken, function (err, data) {
+    repository[req.user.profile.provider].deleteModel(modelInfo, req.user.accessToken, function (err, data) {
         if (!err) {
             res.send(data);
         } else {
@@ -130,31 +132,5 @@ threatmodelcontroller.deleteModel = function(req, res) {
         }        
     }); 
 };
-
-//private methods
-function getPagination(headers, page) {
-    
-    var pagination = { page: page, next: false, prev: false };
-    var linkHeader = headers.link;
-    
-    if(linkHeader) {
-        
-        linkHeader.split(',').forEach(function(link) {
-           if (isLinkType('"next"')) {
-               pagination.next = true;
-           }
-           
-           if (isLinkType('"prev"')) {
-               pagination.prev = true;
-           }
-           
-           function isLinkType(type) {
-               return link.split(';')[1].split('=')[1] === type;
-           }
-        });
-    }
-    
-    return pagination;  
-}
  
 module.exports = threatmodelcontroller;
