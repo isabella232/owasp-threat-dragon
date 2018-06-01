@@ -21,15 +21,19 @@ module.exports = function(app) {
     router.get('/logoutform', csrfProtection, home.logoutform);
     router.post('/logout', csrfProtection, home.logout);
 
-    //github sign in
-    router.post('/login/github', csrfProtection, github.doLogin);
-    router.get('/login/github', github.doLogin);
-    router.get('/oauth/github', github.doLogin, github.completeLogin);
+    //github sign in routes
+    if(process.env.GITHUB_CLIENT_ID){
+        router.post('/login/github', csrfProtection, github.doLogin);
+        router.get('/login/github', github.doLogin);
+        router.get('/oauth/github', github.doLogin, github.completeLogin);
+    }
 
-    //gitlab sign in
-    router.post('/login/gitlab', csrfProtection, gitlab.doLogin);
-    router.get('/login/gitlab', gitlab.doLogin);
-    router.get('/oauth/gitlab', gitlab.doLogin, gitlab.completeLogin);
+    //gitlab sign in routes
+    if(process.env.GITLAB_APPLICATION_ID){
+        router.post('/login/gitlab', csrfProtection, gitlab.doLogin);
+        router.get('/login/gitlab', gitlab.doLogin);
+        router.get('/oauth/gitlab', gitlab.doLogin, gitlab.completeLogin);    
+    }
 
     //threat models
     router.get('/threatmodel/repos', home.ensureLoggedIn, threatmodel.repos);

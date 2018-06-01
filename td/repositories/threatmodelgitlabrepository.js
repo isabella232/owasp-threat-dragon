@@ -41,7 +41,7 @@ threatmodelrepository.model = function (modelInfo, accessToken, cb) {
 
     var client = gitlabClient(accessToken);
 
-    client.Files.show(getRepoFullName(modelInfo),getModelPath(modelInfo),modelInfo.branch).then(model => {
+    client.RepositoryFiles.show(getRepoFullName(modelInfo),getModelPath(modelInfo),modelInfo.branch).then(model => {
         cb(null, model)
     }).catch(cb)
 };

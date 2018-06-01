@@ -30,11 +30,18 @@ threatmodelcontroller.branches = function (req, res){
     
     repository[req.user.profile.provider].branches(repoInfo, req.user.accessToken, function(err, data) {
         if(!err) {
+            var baseUrl = 'https://github.com';
             var responseBranches = [];
+
+            if(req.user.profile.provider=='gitlab'){
+                baseUrl = process.env.GITLAB_URL;
+            }
+
             data.branches.forEach(function (branch, index) {
                 responseBranches[index] = branch.name;
             });
-            res.send({branches: responseBranches, pagination: data.pagination});
+
+            res.send({branches: responseBranches, pagination: data.pagination, baseUrl:baseUrl});
         } else {
             res.status(err.statusCode || 500).json(err);
         }     
@@ -51,11 +58,18 @@ threatmodelcontroller.models = function (req, res){
     
     repository[req.user.profile.provider].models(branchInfo, req.user.accessToken, function(err, data) {
         if(!err) {
+            var baseUrl = 'https://github.com';
             var responseModels = [];
+
+            if(req.user.profile.provider=='gitlab'){
+                baseUrl = process.env.GITLAB_URL;
+            }
+            
             data.models.forEach(function (model, index) {
                 responseModels[index] = model.name;
             });
-            res.send(responseModels);
+
+            res.send({models:responseModels, baseUrl:baseUrl});
         } else {
             res.status(err.statusCode || 500).json(err);
         }     
