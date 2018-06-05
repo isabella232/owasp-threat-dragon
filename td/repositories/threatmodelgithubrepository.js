@@ -6,7 +6,7 @@ threatmodelrepository.repos = function (page, accessToken, cb) {
 
     var client = github.client(accessToken);
     client.me().repos(page, function(err, repos, headers){
-        cb(err,{repos: repos, pagination: getPagination(page,headers)})
+        cb(err,{repos: repos, pagination: getPagination(page,headers)});
     });
 };
 
@@ -14,7 +14,7 @@ threatmodelrepository.branches = function (repoInfo, accessToken, cb) {
 
     var client = github.client(accessToken);
     client.repo(getRepoFullName(repoInfo)).branches(repoInfo.page, function(err, branches, headers){
-        cb(err,{branches: branches, pagination: getPagination(repoInfo.page,headers)})
+        cb(err,{branches: branches, pagination: getPagination(repoInfo.page,headers)});
     });
 };
 
@@ -22,7 +22,7 @@ threatmodelrepository.models = function (branchInfo, accessToken, cb) {
 
     var client = github.client(accessToken);
     client.repo(getRepoFullName(branchInfo)).contents('ThreatDragonModels', branchInfo.branch, function (err,models){
-        cb(err, {models: models})
+        cb(err, {models: models});
     });
 };
 
