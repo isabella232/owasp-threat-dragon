@@ -1,5 +1,5 @@
 'use strict';
-var repository = {}
+var repository = {};
 repository.github = require('../repositories/threatmodelgithubrepository');
 repository.gitlab = require('../repositories/threatmodelgitlabrepository');
 var threatmodelcontroller = {};
