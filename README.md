@@ -22,6 +22,26 @@ This repository contains the files for the web application variant.
 
 Core files that are shared between both the desktop and web variants are stored in an [seperate repo](https://github.com/mike-goodwin/owasp-threat-dragon-core) and are installable as a [seperate package](https://www.npmjs.com/package/owasp-threat-dragon-core).
 
+## Docker Setup
+
+* Create new `env-file.txt` with the following variables
+
+```bash
+GITLAB_APPLICATION_ID=XXXXXXXXXX
+GITLAB_APPLICATION_SECRET=XXXXXXXXXX
+GITLAB_CALLBACK_URL=http://THREATDRAGONIP:3000/oauth/gitlab
+GITLAB_URL=http://GITLABURLORIP
+SESSION_SIGNING_KEY=XXXXXXXXXX
+SESSION_ENCRYPTION_KEYS=[{"isPrimary": true, "id": 0, "value": "XXXXXXXXXX"}]
+SESSION_STORE=local
+```
+
+* Then run the docker contianer using below command
+
+```bash
+docker run --name td -p 3000:3000 --env-file env-file.txt -d appsecco/owasp-threat-dragon
+```
+
 ## Installing
 
 Threat Dragon is a Single Page Application (SPA) using Angular on the client and node.js on the server. To build and run locally follow these steps:
