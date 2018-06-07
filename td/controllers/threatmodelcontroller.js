@@ -34,7 +34,7 @@ threatmodelcontroller.branches = function (req, res){
             var responseBranches = [];
 
             if(req.user.profile.provider=='gitlab'){
-                baseUrl = process.env.GITLAB_URL;
+                baseUrl = process.env.GITLAB_URL || 'https://gitlab.com';
             }
 
             data.branches.forEach(function (branch, index) {
@@ -62,7 +62,7 @@ threatmodelcontroller.models = function (req, res){
             var responseModels = [];
 
             if(req.user.profile.provider=='gitlab'){
-                baseUrl = process.env.GITLAB_URL;
+                baseUrl = process.env.GITLAB_URL || 'https://gitlab.com';
             }
             
             data.models.forEach(function (model, index) {

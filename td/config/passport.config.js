@@ -29,7 +29,7 @@ function passportConfig(app) {
             clientID: process.env.GITLAB_APPLICATION_ID,
             clientSecret: process.env.GITLAB_APPLICATION_SECRET,
             callbackURL: process.env.GITLAB_CALLBACK_URL,
-            baseURL: process.env.GITLAB_URL,
+            baseURL: process.env.GITLAB_URL || 'https://gitlab.com',
             scope: ['api']
         },
         function(accessToken, refreshToken, profile, done) {

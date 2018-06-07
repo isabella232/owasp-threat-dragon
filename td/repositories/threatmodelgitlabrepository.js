@@ -3,7 +3,7 @@ const Gitlab = require('gitlab/dist/es5').default;
 var threatmodelrepository = {};
 
 function gitlabClient(accessToken) {
-    return new Gitlab({url: process.env.GITLAB_URL, oauthToken: accessToken});
+    return new Gitlab({url: process.env.GITLAB_URL || 'https://gitlab.com', oauthToken: accessToken});
 }
 
 threatmodelrepository.repos = function (page, accessToken, cb) {
