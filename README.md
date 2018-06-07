@@ -22,25 +22,37 @@ This repository contains the files for the web application variant.
 
 Core files that are shared between both the desktop and web variants are stored in an [seperate repo](https://github.com/mike-goodwin/owasp-threat-dragon-core) and are installable as a [seperate package](https://www.npmjs.com/package/owasp-threat-dragon-core).
 
-## Docker Setup
+## Dockerized Setup
 
-* Create new `env-file.txt` with the following variables
+* Create a env-file.txt with the following variables. You may leave out the variables corresponding either Github or Gitlab if you do not want to use them with Threat Dragon.
 
 ```bash
-GITLAB_APPLICATION_ID=XXXXXXXXXX
-GITLAB_APPLICATION_SECRET=XXXXXXXXXX
-GITLAB_CALLBACK_URL=http://THREATDRAGONIP:3000/oauth/gitlab
-GITLAB_URL=http://GITLABURLORIP
 SESSION_SIGNING_KEY=XXXXXXXXXX
 SESSION_ENCRYPTION_KEYS=[{"isPrimary": true, "id": 0, "value": "XXXXXXXXXX"}]
 SESSION_STORE=local
+GITLAB_APPLICATION_ID=XXXXXXXXXX
+GITLAB_APPLICATION_SECRET=XXXXXXXXXX
+GITLAB_CALLBACK_URL=http://THREATDRAGONIP:PORT/oauth/gitlab
+GITLAB_URL=http://GITLABURLORIP:PORT
+GITHUB_CLIENT_ID=XXXXXXXXX
+GITHUB_CLIENT_SECRET=XXXXXXXXX
 ```
 
-* Then run the docker contianer using below command
+* Start the docker contianer using the following command
 
 ```bash
 docker run --name td -p 3000:3000 --env-file env-file.txt -d appsecco/owasp-threat-dragon
 ```
+
+* Visit https://localhost:3000 to use Threat Dragon
+
+If you need help in creating applications under GitHub or Gitlab follow the below guides
+- [Creating an OAuth application in GitHub](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
+- [Creating an OAuth application in GitLab](https://docs.gitlab.com/ce/integration/gitlab.html)
+
+Ensure that the callback/redirect URL you use when configuring Threat Dragon and your provider match and are accessible from the systems that will be using Threat Dragon.
+ 
+In case you want to use Threat Dragon with https://gitlab.com, you may just ignore the GITLAB_URL environment variable when configuring Threat Dragon.
 
 ## Installing
 
@@ -57,23 +69,6 @@ This installs code in two sub-folders. One for the main application (`td`) and o
 `npm install`
 
 ## Environment variables
-
-To run Threat Dragon with Github and/or Gitlab, please set the following environment variables by runnung
-```bash
-export SESSION_SIGNING_KEY="XXXXXXX"
-export SESSION_ENCRYPTION_KEYS="[{\"isPrimary\": true, \"id\": 0, \"value\": \"XXXXXXX\"}]"
-export SESSION_STORE="local"
-```
-
-Depending on which provider(s) you choose to integrate with Threat Dragon, set the necessary variables
-```bash
-export GITHUB_CLIENT_ID="XXXXXX"
-export GITHUB_CLIENT_SECRET="XXXXXX"
-export GITLAB_APPLICATION_ID="XXXXXXX"
-export GITLAB_APPLICATION_SECRET="XXXXXX"
-export GITLAB_CALLBACK_URL="http://192.168.XX.XX:3000/oauth/gitlab"
-export GITLAB_URL="http://192.168.XX.XX:3080"
-```
 
 Threat Dragon uses GitHub to store threat models, so you need to go to your GitHub account and [register it as a GitHub application](https://github.com/settings/applications/new). Once you have done that you need to set the Client ID and Client Secret as environment variables (`GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`).
 
