@@ -1,7 +1,8 @@
 'use strict';
 
 var passport = require('passport');
-var Strategy = require('passport-github').Strategy;
+var GitHubStrategy = require('passport-github').Strategy;
+var GitLabStrategy = require('passport-gitlab2').Strategy;
 var cryptoHelper = require('../helpers/encryption.helper');
 
 function passportConfig(app) {
@@ -10,15 +11,31 @@ function passportConfig(app) {
     app.use(passport.session());
     
     //github sigin
-    passport.use(new Strategy({
-        clientID: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        failureRedirect: 'login/github',
-        scope: [ 'public_repo' ]
-    },
-    function(accessToken, refreshToken, profile, done) {
-        return done(null, {profile: profile, accessToken: accessToken});
-    }));
+    if(process.env.GITHUB_CLIENT_ID){
+        passport.use(new GitHubStrategy({
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            failureRedirect: 'login/github',
+            scope: [ 'public_repo' ]
+        },
+        function(accessToken, refreshToken, profile, done) {
+            return done(null, {profile: profile, accessToken: accessToken});
+        }));
+    }
+
+    //gitlab sigin
+    if(process.env.GITLAB_APPLICATION_ID){
+        passport.use(new GitLabStrategy({
+            clientID: process.env.GITLAB_APPLICATION_ID,
+            clientSecret: process.env.GITLAB_APPLICATION_SECRET,
+            callbackURL: process.env.GITLAB_CALLBACK_URL,
+            baseURL: process.env.GITLAB_URL,
+            scope: ['api']
+        },
+        function(accessToken, refreshToken, profile, done) {
+            return done(null, {profile: profile, accessToken: accessToken});
+        }));
+    }
 
     //serialisation/deserialisation of users
     //session contains sensitive info like access tokens so encrypt it before storage

@@ -63,6 +63,7 @@ function github($q, $routeParams, $location, common, datacontext) {
                 vm.pagination = response.data.pagination;
                 vm.pagination.page = parseInt(vm.pagination.page, 10);
                 vm.branches = response.data.branches;
+                vm.baseUrl = response.data.baseUrl;
             },
             function (err) {
                 vm.branches = [];
@@ -74,7 +75,8 @@ function github($q, $routeParams, $location, common, datacontext) {
     function getModels(organisation, repo, branch) {
         return datacontext.models(organisation, repo, branch).then(
             function (response) {
-                vm.models = response.data;
+                vm.models = response.data.models;
+                vm.baseUrl = response.data.baseUrl;
             },
             function (err) {
                 vm.models = [];

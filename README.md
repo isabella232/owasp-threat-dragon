@@ -38,6 +38,23 @@ This installs code in two sub-folders. One for the main application (`td`) and o
 
 ## Environment variables
 
+To run Threat Dragon with Github and/or Gitlab, please set the following environment variables by runnung
+```bash
+export SESSION_SIGNING_KEY="XXXXXXX"
+export SESSION_ENCRYPTION_KEYS="[{\"isPrimary\": true, \"id\": 0, \"value\": \"XXXXXXX\"}]"
+export SESSION_STORE="local"
+```
+
+Depending on which provider(s) you choose to integrate with Threat Dragon, set the necessary variables
+```bash
+export GITHUB_CLIENT_ID="XXXXXX"
+export GITHUB_CLIENT_SECRET="XXXXXX"
+export GITLAB_APPLICATION_ID="XXXXXXX"
+export GITLAB_APPLICATION_SECRET="XXXXXX"
+export GITLAB_CALLBACK_URL="http://192.168.XX.XX:3000/oauth/gitlab"
+export GITLAB_URL="http://192.168.XX.XX:3080"
+```
+
 Threat Dragon uses GitHub to store threat models, so you need to go to your GitHub account and [register it as a GitHub application](https://github.com/settings/applications/new). Once you have done that you need to set the Client ID and Client Secret as environment variables (`GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`).
 
 You also need to set a session signing key environment variable (`SESSION_SIGNING_KEY`).

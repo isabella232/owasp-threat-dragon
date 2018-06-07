@@ -45,10 +45,26 @@ html(lang="en")
                                         |or as a web application. The desktop app is great if you want to try the application without giving it access to your GitHub repos,
                                         |but if you choose the online version you get to unleash the awesome power of GitHub on your threat models! 
                                         |Obviously, to do this you need to log in first...
-                            .row
-                                .col-sm-5.col-sm-offset-7
-                                    form(action="login",role="login",method="POST")
-                                        input(type="hidden",name="_csrf",value=csrfToken)
-                                        button.btn.btn-lg.btn-default.btn-block(type="submit")
-                                            span.fa.fa-2x.fa-github.icon-align.fa-fw
-                                            span Login with GitHub                                            
+                            if githubProvider == true
+                                .row
+                                    .col-sm-5.col-sm-offset-7
+                                        form(action="login/github",role="login",method="POST")
+                                            input(type="hidden",name="_csrf",value=csrfToken)
+                                            button.btn.btn-lg.btn-default.btn-block(type="submit")
+                                                span.fa.fa-2x.fa-github.icon-align.fa-fw
+                                                span Login with GitHub
+                                br
+                            if gitlabProvider == true
+                                .row
+                                    .col-sm-5.col-sm-offset-7
+                                        form(action="login/gitlab",role="login",method="POST")
+                                            input(type="hidden",name="_csrf",value=csrfToken)
+                                            button.btn.btn-lg.btn-default.btn-block(type="submit")
+                                                span.fa.fa-2x.fa-gitlab.icon-align.fa-fw
+                                                span Login with GitLab
+                                br
+                            if (gitlabProvider == false) && (githubProvider == false)
+                                .row
+                                    .col-sm-5.col-sm-offset-7
+                                        h3 No provider configured
+                                br

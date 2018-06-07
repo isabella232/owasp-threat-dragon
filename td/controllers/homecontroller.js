@@ -18,7 +18,7 @@ homeController.index = function (req, res) {
 };
 
 homeController.login = function (req, res) {
-    res.render('login', { csrfToken: req.csrfToken() });
+    res.render('login', { csrfToken: req.csrfToken() , gitlabProvider: process.env.GITLAB_APPLICATION_ID? true:false, githubProvider: process.env.GITHUB_CLIENT_ID? true:false});
 };
 
 //ensure current user is signed in
